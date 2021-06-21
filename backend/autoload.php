@@ -1,4 +1,4 @@
-?php
+<?php
 /**
  * AUTOLOAD DE CLASSES PARA O PACOTE 'Classes'
  * @param $classe
