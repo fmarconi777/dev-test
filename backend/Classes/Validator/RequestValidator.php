@@ -2,6 +2,10 @@
 
 namespace Validator;
 
+use Util\JsonUtil;
+use Service\TasksService;
+use Util\ConstantesGenericasUtil;
+
 class RequestValidator
 {
 
@@ -19,7 +23,7 @@ class RequestValidator
 
     public function processarRequest()
     {
-        $retorno = "Erro";
+        $retorno = ConstantesGenericasUtil::MSG_ERRO_TIPO_METODO;
 
         if (in_array($this->request['metodo'], self::TIPO_REQUEST, true)) {
             $retorno = $this->direcinarRequest();
@@ -57,6 +61,14 @@ class RequestValidator
         $TasksService = new TasksService($this->request);
         $TasksService->setDadosCorpoRequest($this->dadosRequest);
         $retorno = $TasksService->validarPost();
+        return $retorno;
+    }
+
+    private function put()
+    {
+        $TasksService = new TasksService($this->request);
+        $TasksService->setDadosCorpoRequest($this->dadosRequest);
+        $retorno = $TasksService->validarPut();
         return $retorno;
     }
 

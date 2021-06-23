@@ -6,7 +6,7 @@ error_reporting(E_ERROR);
 
 define(HOST, 'localhost:3306');
 define(BANCO, 'TodoAppDB');
-define(USUARIO, 'root');
+define(USUARIO, 'admin');
 define(SENHA, '123456');
 
 define(DS, DIRECTORY_SEPARATOR);
