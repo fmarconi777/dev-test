@@ -24,6 +24,8 @@ class JsonUtil
         header('Content-Type: application/json, charset=UTF-8');
         header('Cache-Control: no-cache, no-store, must-revalidate');
         header('Access-Control-Allow-Methods: OPTIONS, GET, POST, PUT, DELETE');
+        header('Access-Control-Allow-Origin: '.APPS);
+        header('Access-Control-Allow-Headers: origin, content-type, accept');
         echo json_encode($json);
         exit;
     }
