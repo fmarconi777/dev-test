@@ -48,8 +48,8 @@ export default function Todo() {
     }, []
     );
 
-    const deleteTask = useCallback(function (table) {
-        Axios.delete(`http://localhost:8080/deletar/${table.ID}`).then(resposta => getTasks());
+    const deleteTask = useCallback(function (id) {
+        Axios.delete(`http://localhost:8080/deletar/${id}`).then(resposta => getTasks());
     }, []
     );
 
