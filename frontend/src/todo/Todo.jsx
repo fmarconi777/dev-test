@@ -9,7 +9,8 @@ export default function Todo() {
 
     const initialState = {
         task: '',
-        description: ''
+        description: '',
+        finished: ''
     };
 
     const [state, setState] = useState(initialState);
@@ -53,6 +54,13 @@ export default function Todo() {
     }, []
     );
 
+    const finishTask = useCallback(function (id) {
+        state.finished = 1;
+        Axios.put(`http://localhost:8080/finalizar/${id}`, { finished: state.finished }).then(resposta => getTasks());
+        state.finished = '';
+    }, [state]
+    );
+
     return (
         <Container>
             <TodoForm onChangeValue={onChangeValue}
@@ -64,7 +72,8 @@ export default function Todo() {
             
             <TodoTable table={table}
                        getTasks={getTasks}
-                       deleteTask={deleteTask} />
+                       deleteTask={deleteTask} 
+                       finishTask={finishTask} />
         </Container>
     )
 

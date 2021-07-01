@@ -4,7 +4,8 @@ import { TableCell, Checkbox, TableSortLabel, TableRow, TableHead } from '@mater
 
 const headCells = [
     { id: 'task', numeric: false, disablePadding: false, label: 'Tarefas' },
-    { id: 'description', numeric: false, disablePadding: false, label: 'Descrição' }
+    { id: 'description', numeric: false, disablePadding: false, label: 'Descrição' },
+    { id: 'finished', numeric: false, disablePadding: false, label: 'Finalizado' }
 ];
 
 export default function TodoTableHead(props) {

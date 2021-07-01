@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import TodoTableHead from './TodoTableHead';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { Table, TableBody, TableCell, Tooltip, IconButton, Checkbox, Paper, Typography, Toolbar, TableRow, TableContainer, TablePagination } from '@material-ui/core';
+import { Table, TableBody, TableCell, Box, Tooltip, Chip, IconButton, Checkbox, Paper, Typography, Toolbar, TableRow, TableContainer, TablePagination } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DoneAllIcon from '@material-ui/icons/DoneAll';
+import DoneIcon from '@material-ui/icons/Done';
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -36,16 +38,20 @@ const useToolbarStyles = makeStyles((theme) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
+        background: '#64b5f6',
+        borderRadius: 15
     },
     highlight:
         theme.palette.type === 'light'
             ? {
                 color: theme.palette.secondary.main,
                 backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+                borderRadius: 15
             }
             : {
                 color: theme.palette.text.primary,
                 backgroundColor: theme.palette.secondary.dark,
+                borderRadius: 15
             },
     title: {
         flex: '1 1 100%',
@@ -55,8 +61,8 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected } = props;
-    const { toDelete } = props;
-    const { deleteTask} = props;
+    const { handleDelete } = props;
+    const { handleDone } = props;
 
     return (
         <Toolbar
@@ -75,15 +81,21 @@ const EnhancedTableToolbar = (props) => {
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete" onClick={() => toDelete.map((n) => deleteTask(n))}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+                <Box display="flex">
+                    <Tooltip title="Deletar">
+                        <IconButton aria-label="delete" onClick={() => handleDelete()} >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Finalizar">
+                        <IconButton aria-label="done" onClick={() => handleDone()} >
+                            <DoneAllIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
             ) : (
-                <Tooltip title="Filter list">
-                    <div></div>
-                </Tooltip>
+                <div></div>
+
             )}
         </Toolbar>
     );
@@ -100,6 +112,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         width: '100%',
         marginBottom: theme.spacing(2),
+        borderRadius: 15
     },
     table: {
         minWidth: 750,
@@ -114,6 +127,12 @@ const useStyles = makeStyles((theme) => ({
         position: 'absolute',
         top: 20,
         width: 1,
+    },
+    isDone: {
+        background: theme.done.main
+    },
+    open: {
+        background: theme.done.light
     },
 }));
 
@@ -130,6 +149,18 @@ function TodoTable(props) {
     const getTasks = props.getTasks;
     const deleteTask = props.deleteTask;
 
+    const handleDelete = () => {
+        selected.map((n) => deleteTask(n));
+        setSelected([]);
+    };
+
+    const handleDone = () => {
+        selected.forEach((n) => {
+            props.finishTask(n);
+        });
+        setSelected([]);
+    };
+
     useEffect(() => {
         getTasks()
     }, [getTasks])
@@ -141,6 +172,7 @@ function TodoTable(props) {
                 id: table.id,
                 task: table.task,
                 description: table.description,
+                finished: table.finished,
                 created: table.created_at
             }
         ))
@@ -192,12 +224,32 @@ function TodoTable(props) {
 
     const isSelected = (id) => selected.indexOf(id) !== -1;
 
+    const isDone = (done) => {
+        if (done === '1') {
+            return (
+                <Chip
+                    className={classes.isDone}
+                    label="Finalizado"
+                    color="primary"
+                    deleteIcon={<DoneIcon />}
+                />
+            )
+        }
+        return (
+            <Chip
+                className={classes.open}
+                label="Aberto"
+                color="secondary"
+                deleteIcon={<DoneIcon />}
+            />
+        )
+    }
 
 
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} toDelete={selected} deleteTask={deleteTask} />
+                <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleDelete} handleDone={handleDone} />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -238,6 +290,7 @@ function TodoTable(props) {
                                             </TableCell>
                                             <TableCell align="left">{row.task}</TableCell>
                                             <TableCell align="left">{row.description}</TableCell>
+                                            <TableCell align="left">{isDone(row.finished)}</TableCell>
                                             {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {row.id}
                                             </TableCell> */}
@@ -257,7 +310,7 @@ function TodoTable(props) {
                     onChangeRowsPerPage={handleChangeRowsPerPage}
                 />
             </Paper>
-            
+
         </div>
     );
 
