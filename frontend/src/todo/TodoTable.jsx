@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import TodoTableHead from './TodoTableHead';
+import TodoUpdate from './TodoUpdate';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, Box, Tooltip, Chip, IconButton, Checkbox, Paper, Typography, Toolbar, TableRow, TableContainer, TablePagination } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -248,6 +249,7 @@ function TodoTable(props) {
 
     return (
         <div className={classes.root}>
+        {props.children}
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar numSelected={selected.length} handleDelete={handleDelete} handleDone={handleDone} />
                 <TableContainer>
@@ -273,24 +275,24 @@ function TodoTable(props) {
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
-                                        <TableRow
-                                            hover
-                                            onClick={(event) => handleClick(event, row.id)}
-                                            role="checkbox"
-                                            aria-checked={isItemSelected}
-                                            tabIndex={-1}
-                                            key={row.id}
-                                            selected={isItemSelected}
-                                        >
+                                        <TableRow>
                                             <TableCell padding="checkbox">
                                                 <Checkbox
+                                                    selected={isItemSelected}
+                                                    key={row.id}
+                                                    onClick={(event) => handleClick(event, row.id)}
                                                     checked={isItemSelected}
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
                                             </TableCell>
                                             <TableCell align="left">{row.task}</TableCell>
                                             <TableCell align="left">{row.description}</TableCell>
-                                            <TableCell align="left">{isDone(row.finished)}</TableCell>
+                                            <TableCell align="left">
+                                                <Box display="flex">
+                                                    {isDone(row.finished)}
+                                                    <TodoUpdate id={row.id} />
+                                                </Box>
+                                            </TableCell>
                                             {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                                                 {row.id}
                                             </TableCell> */}

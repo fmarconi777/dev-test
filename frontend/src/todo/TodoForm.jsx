@@ -27,7 +27,7 @@ export default function TodoForm(props) {
         <div>
           <TextField required id="standard-required" label="Tarefa" value={props.task} onChange={props.onChangeValue} name="task" />
           <TextField required id="standard-multiline-static" label="Descrição" multiline value={props.description} onChange={props.onChangeValue} name="description" rows={5} cols={20} />
-          <button className="Cadastrar" type="submit" >Cadastrar</button>
+          <button type="submit" >Cadastrar</button>
         </div>
       </form>
     </Container>
